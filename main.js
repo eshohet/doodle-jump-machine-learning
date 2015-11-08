@@ -15,6 +15,9 @@ var width = 422,
 canvas.width = width;
 canvas.height = height;
 
+////// TARGET PLATFORM
+target = 10;
+//////
 //Variables for game
 var platforms = [],
   image = document.getElementById("sprite"),
@@ -82,12 +85,23 @@ var Player = function() {
       else if (this.dir == "right_land") this.cy = 289;
       else if (this.dir == "left_land") this.cy = 371;
 
+      ////// Calculate distance to each platform
+      for (var i = 0; i < platformCount; i++) {
+      	p = platforms[i];
+      	p.distx = p.x-player.x;
+      	p.disty = p.y-player.y;
+      	}	
+
       ctx.drawImage(image, this.cx, this.cy, this.cwidth, this.cheight, this.x, this.y, this.width, this.height);
     } catch (e) {}
   };
 
   this.jump = function() {
     this.vy = -8;
+    ////// pick a new target platform after jumping
+    choices = find_possible(3);
+    target = choices[0][0];//choices[Math.round(Math.random(3))][0];
+  	console.log(choices[0]);
   };
 
   this.jumpHigh = function() {
@@ -235,13 +249,16 @@ function init() {
   //Player related calculations and functions
 
   function playerCalc() {
-    if (dir == "left") {
+
+ 	//////Added auto rotate using direction function
+    if (direction(target) == "left") {
       player.dir = "left";
       if (player.vy < -7 && player.vy > -15) player.dir = "left_land";
-    } else if (dir == "right") {
+    } else if (direction(target) == "right") {
       player.dir = "right";
       if (player.vy < -7 && player.vy > -15) player.dir = "right_land";
     }
+    //////
 
     //Adding keyboard controls
     document.onkeydown = function(e) {
@@ -274,6 +291,25 @@ function init() {
         player.isMovingRight = false;
       }
     };
+
+    ////// added auto move with direction function
+    if(direction(target) == "left"){
+    	player.x += player.vx;
+    	player.vx -= 0.15;
+    }
+    else {
+    	player.x += player.vx;
+    	if(player.vx < 0) player.vx += 0.1;
+    }
+    //////
+
+    if (direction(target) == "right") {
+      player.x += player.vx;
+      player.vx += 0.15;
+    } else {
+      player.x += player.vx;
+      if (player.vx > 0) player.vx -= 0.1;
+    }
 
     //Accelerations produces when the user hold the keys
     if (player.isMovingLeft === true) {
@@ -633,3 +669,43 @@ menuLoop = function() {
 };
 
 menuLoop();
+
+////// Determine the direction to move to get to platform p
+function direction(n){
+	p = platforms[n];
+	try{
+		if(p.x + p.width -25 < player.x)
+			return "left"
+		else if(player.x < p.x + 25)
+			return "right"
+	}
+	catch(e) {}
+	return "none"
+} 
+
+////// Find num possible platforms to jump to	
+function find_possible(num){
+	choices = [];
+	notchoices = [];
+
+	platforms.forEach( function(p,i) {
+		if( 10 > p.disty && p.disty > -150 && p.type != 3 && p.flag != 1 && choices.length < num)
+	    	choices.push([i,Math.round(p.disty/5)*5]);
+	    else
+	    	notchoices.push([i,Math.round(p.disty/5)*5]);
+	});
+
+	notchoices.sort(compdist);
+	choices.sort(compdist);
+	while( choices.length < num ){
+	  choices.push(notchoices.pop()); 
+	}
+
+
+	return choices;
+}
+
+////// Compare distances 
+function compdist(a, b){
+	return a.disty - b.disty;
+}
