@@ -495,6 +495,7 @@ function reset() {
   flag = 0;
   position = 0;
   score = 0;
+  baseHeight = 0;
 
   base = new Base();
   player = new Player();
