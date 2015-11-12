@@ -145,7 +145,7 @@ function Platform() {
   //1: Normal
   //2: Moving
   //3: Breakable (Go through)
-  //4: Vanishable 
+  //4: Vanishable
   //Setting the probability of which type of platforms should be shown at what score
   if (score >= 5000) this.types = [2, 3, 3, 3, 4, 4, 4, 4];
   else if (score >= 2000 && score < 5000) this.types = [2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4];
@@ -230,7 +230,7 @@ function init() {
   //Variables for the game
   var dir = "left",
     jumpCount = 0;
-  
+
   firstRun = false;
 
   //Function for clearing canvas in each consecutive frame
@@ -253,7 +253,7 @@ function init() {
     //Adding keyboard controls
     document.onkeydown = function(e) {
       var key = e.keyCode;
-      
+
       if (key == 37) {
         dir = "left";
         player.isMovingLeft = true;
@@ -261,18 +261,18 @@ function init() {
         dir = "right";
         player.isMovingRight = true;
       }
-      
+
       if(key == 32) {
         if(firstRun === true)
           init();
-        else 
+        else
           reset();
       }
     };
 
     document.onkeyup = function(e) {
       var key = e.keyCode;
-    
+
       if (key == 37) {
         dir = "left";
         player.isMovingLeft = false;
@@ -306,11 +306,11 @@ function init() {
       player.vx = -8;
 
     //console.log(player.vx);
-    
+
     //Jump the player when it hits the base
     if ((player.y + player.height) > base.y && base.y < height) player.jump();
 
-    //Gameover if it hits the bottom 
+    //Gameover if it hits the bottom
     if (base.y > height && (player.y + player.height) > height && player.isDead != "lol") player.isDead = true;
 
     //Make the player move through walls
@@ -450,7 +450,7 @@ function init() {
     if(player.y > height/2 && flag === 0) {
       player.y -= 8;
       player.vy = 0;
-    } 
+    }
     else if(player.y < height / 2) flag = 1;
     else if(player.y + player.height > height) {
       showGoMenu();
@@ -459,7 +459,7 @@ function init() {
 
       var tweet = document.getElementById("tweetBtn");
       tweet.href='http://twitter.com/share?url=http://is.gd/PnFFzu&text=I just scored ' +score+ ' points in the HTML5 Doodle Jump game!&count=horiztonal&via=cssdeck&related=solitarydesigns';
-    
+
       var facebook = document.getElementById("fbBtn");
       facebook.href='http://facebook.com/sharer.php?s=100&p[url]=http://cssdeck.com/labs/html5-doodle-jump/8&p[title]=I just scored ' +score+ ' points in the HTML5 Doodle Jump game!&p[summary]=Can you beat me in this awesome recreation of Doodle Jump created in HTML5?';
 
@@ -502,7 +502,7 @@ function reset() {
   hideGoMenu();
   showScore();
   player.isDead = false;
-  
+
   flag = 0;
   position = 0;
   score = 0;
@@ -519,6 +519,9 @@ function reset() {
   for (var i = 0; i < platformCount; i++) {
     platforms.push(new Platform());
   }
+
+  player.x = platforms[0].x;
+  player.y = platforms[0].y;
 }
 
 //Hides the menu
@@ -560,10 +563,10 @@ function playerJump() {
   player.y += player.vy;
   player.vy += gravity;
 
-  if (player.vy > 0 && 
-    (player.x + 15 < 260) && 
-    (player.x + player.width - 15 > 155) && 
-    (player.y + player.height > 475) && 
+  if (player.vy > 0 &&
+    (player.x + 15 < 260) &&
+    (player.x + player.width - 15 > 155) &&
+    (player.y + player.height > 475) &&
     (player.y + player.height < 500))
     player.jump();
 
@@ -586,13 +589,13 @@ function playerJump() {
       dir = "right";
       player.isMovingRight = true;
     }
-  
+
     if(key == 32) {
       if(firstRun === true) {
         init();
         firstRun = false;
       }
-      else 
+      else
         reset();
     }
   };
@@ -639,7 +642,7 @@ function playerJump() {
 function update() {
   ctx.clearRect(0, 0, width, height);
   playerJump();
-}   
+}
 
 menuLoop = function() {
   update();
