@@ -520,8 +520,8 @@ function reset() {
     platforms.push(new Platform());
   }
 
-  player.x = platforms[0].x;
-  player.y = platforms[0].y;
+  // player.x = platforms[0].x;
+  // player.y = platforms[0].y;
 }
 
 //Hides the menu
