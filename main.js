@@ -15,6 +15,14 @@ var width = 422,
 canvas.width = width;
 canvas.height = height;
 
+
+
+var baseHeight = 0;
+
+
+// Used to define current iteration for graphing library
+var currentIteration = 1;
+
 //Variables for game
 var platforms = [],
   image = document.getElementById("sprite"),
@@ -217,7 +225,6 @@ var spring = function() {
 };
 
 var Spring = new spring();
-var baseHeight = 0;
 
 function init() {
   //Variables for the game
@@ -488,6 +495,10 @@ function init() {
 }
 
 function reset() {
+  // record iteration and score for graphing library
+  ScorePerLifeChartDPS.push({x: currentIteration, y: score});
+  updateChart();
+
   hideGoMenu();
   showScore();
   player.isDead = false;
@@ -496,6 +507,8 @@ function reset() {
   position = 0;
   score = 0;
   baseHeight = 0;
+  currentIteration++;
+
 
   base = new Base();
   player = new Player();
