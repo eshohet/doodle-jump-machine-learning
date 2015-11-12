@@ -22,7 +22,7 @@ body {
   overflow: hidden;
 }
 
-canvas {
+canvas.doodle_jump {
   height: 552px;
   width: 422px;
   display: block;
