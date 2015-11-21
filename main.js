@@ -551,6 +551,7 @@ function reset() {
             y: average
         });
         updateChart();
+        store.set('brain', brain);
     }
     hideGoMenu();
     showScore();
