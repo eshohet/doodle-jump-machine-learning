@@ -276,7 +276,7 @@ function init() {
             player.x += player.vx;
             player.vx -= 0.15;
             //stop moving if we're above the target platform
-            if (player.x > platforms[target_platform].x && player.x < (platforms[target_platform].x + width)){
+            if (player.x > platforms[target_platform].x && player.x < (platforms[target_platform].x + width && platforms[target_platform] > player.y)){
               player.vx = 0;
             }
         } else {
@@ -289,7 +289,7 @@ function init() {
             player.x += player.vx;
             player.vx += 0.15;
             //stop moving in x direction if we are above the target platform
-            if (player.x > platforms[target_platform].x && player.x < (platforms[target_platform].x + width)){
+            if (player.x > platforms[target_platform].x && player.x < (platforms[target_platform].x + width && platforms[target_platform] > player.y)){
               player.vx = 0;
             }
         } else {
