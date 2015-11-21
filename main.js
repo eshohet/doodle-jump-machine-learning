@@ -148,7 +148,8 @@ function Platform() {
                 ctx.fillText(this.reward, this.x + 30, this.y + 13);
                 if(this.target){
                   ctx.fillText("TARGET", this.x + 20, this.y + 26);
-
+                  ctx.fillText("|", platforms[target_platform].x, platforms[target_platform].y);
+                  ctx.fillText("|", platforms[target_platform].x+platforms[target_platform].width, platforms[target_platform].y);
                 }
 
               }
@@ -274,6 +275,10 @@ function init() {
         if (direction(target_platform) == "left") {
             player.x += player.vx;
             player.vx -= 0.15;
+            //stop moving if we're above the target platform
+            if (player.x > platforms[target_platform].x && player.x < (platforms[target_platform].x + width)){
+              player.vx = 0;
+            }
         } else {
             player.x += player.vx;
             if (player.vx < 0) player.vx += 0.1;
@@ -283,6 +288,10 @@ function init() {
         if (direction(target_platform) == "right") {
             player.x += player.vx;
             player.vx += 0.15;
+            //stop moving in x direction if we are above the target platform
+            if (player.x > platforms[target_platform].x && player.x < (platforms[target_platform].x + width)){
+              player.vx = 0;
+            }
         } else {
             player.x += player.vx;
             if (player.vx > 0) player.vx -= 0.1;
