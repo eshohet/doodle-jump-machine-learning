@@ -33,6 +33,12 @@ var Q_model = function() {
 }
 var brain = new Q_model();
 
+//autoload brain from disk
+if(store.has('brain')) {
+  brain = store.get('brain');
+  console.log('Brain has been loaded');
+}
+
 var division = 10; // round the y distance to the nearest division
 var previous_score = 0;
 var previous_collision = -1;
