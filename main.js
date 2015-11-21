@@ -130,6 +130,8 @@ function Platform() {
     this.cwidth = 105;
     this.cheight = 31;
 
+    this.reward = 0;
+
     //Function to draw it
     this.draw = function() {
         try {
@@ -143,6 +145,7 @@ function Platform() {
 
             if (draw_flag)
                 ctx.drawImage(image, this.cx, this.cy, this.cwidth, this.cheight, this.x, this.y, this.width, this.height);
+                ctx.fillText(this.reward, this.x + 30, this.y + 13);
         } catch (e) {}
     };
 
