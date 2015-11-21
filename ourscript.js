@@ -2,7 +2,7 @@ var Q_model = function() {
     this.actions = []; // the full set of actions
     this.explored = 0; // how many states have been explored
     this.last_state = [0, 0]; // the last state predicted
-
+    this.learning_rate = 0.01;
     this.predict = function(state) {
         this.last_state = state;
         i = state[0]; // type of platform
@@ -27,7 +27,7 @@ var Q_model = function() {
     this.reward = function(amount) {
         i = this.last_state[0];
         j = this.last_state[1];
-        this.actions[i][j] += amount;
+        this.actions[i][j] += this.learning_rate*amount;
     };
 
 }
@@ -76,18 +76,18 @@ function decide() {
     // console.log("decide");
     if (target_platform >= 0) {
         if (player.isDead) {
-            brain.reward(-.1);
+            brain.reward(-10);
             //console.log("dead");
             reset();
         } else {
             if (target_platform == previous_collision) {
                 // decision was success
-                brain.reward((score - previous_score - 10) / 100); // reward it for increasing score
+                brain.reward((score - previous_score - 10)); // reward it for increasing score
                 // penalize for staying in same spot
                 //console.log("success");
             } else {
                 // missed the target platform, but didn't die
-                brain.reward(-.05);
+                brain.reward(-5);
                 //console.log("miss");
             }
 
