@@ -19,6 +19,12 @@ canvas.height = height;
 
 var baseHeight = 0;
 
+previous_score = 0;
+previous_collision = -1;
+target_platform = -2;
+
+gamespeed = 1;
+draw_flag = 1;
 
 // Used to define current iteration for graphing library
 var currentIteration = 1;
@@ -52,7 +58,8 @@ var Base = function() {
 
   this.draw = function() {
     try {
-      ctx.drawImage(image, this.cx, this.cy, this.cwidth, this.cheight, this.x, this.y, this.width, this.height);
+      if(draw_flag)
+        ctx.drawImage(image, this.cx, this.cy, this.cwidth, this.cheight, this.x, this.y, this.width, this.height);
     } catch (e) {}
   };
 };
@@ -90,7 +97,8 @@ var Player = function() {
       else if (this.dir == "right_land") this.cy = 289;
       else if (this.dir == "left_land") this.cy = 371;
 
-      ctx.drawImage(image, this.cx, this.cy, this.cwidth, this.cheight, this.x, this.y, this.width, this.height);
+      if(draw_flag)
+        ctx.drawImage(image, this.cx, this.cy, this.cwidth, this.cheight, this.x, this.y, this.width, this.height);
     } catch (e) {}
   };
 
@@ -137,7 +145,8 @@ function Platform() {
       else if (this.type == 4 && this.state === 0) this.cy = 90;
       else if (this.type == 4 && this.state == 1) this.cy = 1000;
 
-      ctx.drawImage(image, this.cx, this.cy, this.cwidth, this.cheight, this.x, this.y, this.width, this.height);
+      if(draw_flag)
+        ctx.drawImage(image, this.cx, this.cy, this.cwidth, this.cheight, this.x, this.y, this.width, this.height);
     } catch (e) {}
   };
 
@@ -190,7 +199,8 @@ var Platform_broken_substitute = function() {
 
   this.draw = function() {
     try {
-      if (this.appearance === true) ctx.drawImage(image, this.cx, this.cy, this.cwidth, this.cheight, this.x, this.y, this.width, this.height);
+      if(draw_flag)
+       if (this.appearance === true) ctx.drawImage(image, this.cx, this.cy, this.cwidth, this.cheight, this.x, this.y, this.width, this.height);
       else return;
     } catch (e) {}
   };
@@ -219,7 +229,8 @@ var spring = function() {
       if (this.state === 0) this.cy = 445;
       else if (this.state == 1) this.cy = 501;
 
-      ctx.drawImage(image, this.cx, this.cy, this.cwidth, this.cheight, this.x, this.y, this.width, this.height);
+      if(draw_flag)
+        ctx.drawImage(image, this.cx, this.cy, this.cwidth, this.cheight, this.x, this.y, this.width, this.height);
     } catch (e) {}
   };
 };
@@ -242,13 +253,46 @@ function init() {
   //Player related calculations and functions
 
   function playerCalc() {
-    if (dir == "left") {
+    // When the player is almost at the top of the arc, predict where to go
+    if(Math.round(player.vy*5) == -28) // scale to reduce number of calls
+      decide();
+
+    // face the direction of target platform
+    if (direction(target_platform) == "left") {
       player.dir = "left";
       if (player.vy < -7 && player.vy > -15) player.dir = "left_land";
-    } else if (dir == "right") {
+    } else if (direction(target_platform) == "right") {
       player.dir = "right";
       if (player.vy < -7 && player.vy > -15) player.dir = "right_land";
     }
+
+       // move towards target platform
+    if(direction(target_platform) == "left"){
+      player.x += player.vx;
+      player.vx -= 0.15;
+    }
+    else {
+      player.x += player.vx;
+      if(player.vx < 0) player.vx += 0.1;
+    }
+    //////
+
+    if (direction(target_platform) == "right") {
+      player.x += player.vx;
+      player.vx += 0.15;
+    } else {
+      player.x += player.vx;
+      if (player.vx > 0) player.vx -= 0.1;
+    }
+
+
+    // if (dir == "left") {
+    //   player.dir = "left";
+    //   if (player.vy < -7 && player.vy > -15) player.dir = "left_land";
+    // } else if (dir == "right") {
+    //   player.dir = "right";
+    //   if (player.vy < -7 && player.vy > -15) player.dir = "right_land";
+    // }
 
     //Adding keyboard controls
     document.onkeydown = function(e) {
@@ -419,10 +463,12 @@ function init() {
           jumpCount = 0;
           return;
         } else if (p.type == 4 && p.state === 0) {
+          previous_collision = i;
           player.jump();
           p.state = 1;
         } else if (p.flag == 1) return;
         else {
+          previous_collision = i;
           player.jump();
         }
       }
@@ -443,6 +489,7 @@ function init() {
   }
 
   function gameOver() {
+    decide();
     platforms.forEach(function(p, i) {
       p.y -= 12;
     });
@@ -484,8 +531,9 @@ function init() {
 
   menuLoop = function(){return;};
   animloop = function() {
+  for(i = 0; i < gamespeed; i++)
     update();
-    requestAnimFrame(animloop);
+  requestAnimFrame(animloop);
   };
 
   animloop();
@@ -560,6 +608,7 @@ function hideScore() {
 }
 
 function playerJump() {
+  
   player.y += player.vy;
   player.vy += gravity;
 
@@ -650,3 +699,64 @@ menuLoop = function() {
 };
 
 menuLoop();
+
+// Game interface
+function get_state() {
+  state = [];
+  platforms.forEach(function(p,i){
+    state.push([p.flag,Math.round((p.y-player.y)/5)*5]); 
+    // State = (Platform breakable, Y distance to platform)
+  });
+  return state;
+}
+
+
+
+
+function decide() {
+  // reward for previous prediction
+    if(player.isDead){
+      while(brain.forward(target_platform) == 0);
+      brain.backward(-50);
+      reset();
+    }
+    else{
+      if(target_platform == previous_collision){ 
+      // decision was success
+        while(brain.forward(target_platform) == 0); // get the same prediction again
+        brain.backward(score-previous_score); // reward it for increasing score
+      }
+      else{
+        while(brain.forward(target_platform) == 1); 
+        // missed the target platform, but didn't die
+        brain.backward(-5); 
+      }
+    state = get_state();
+    predictions = [];
+    for (i = 0; i < state.length; i++) {
+      if(brain.forward(state[i][0],state[i][1]))
+        predictions.push(i); 
+    }
+    target_platform = predictions[Math.floor(Math.random()*predictions.length)];
+
+    //console.log(predictions);
+    }
+
+    
+
+
+
+}
+
+  ////// Determine the direction to move to get to platform p
+  function direction(n){
+    p = platforms[n];
+    try{
+      if(p.x + p.width -25 < player.x)
+        return "left"
+      else if(player.x < p.x + 25)
+        return "right"
+    }
+    catch(e) {}
+    return "none"
+  } 
