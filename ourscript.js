@@ -3,14 +3,14 @@
     this.actions = []; // the full set of actions
     this.explored = 0; // how many states have been explored
     this.last_state = [0, 0]; // the last state predicted
-    this.learning_rate = 0.01;
+    this.learning_rate = 1;
     this.predict = function(state) {
         this.last_state = state;
         i = state[0]; // type of platform
         j = state[1]; // distance to platform
         if (a = this.actions[i]) { // if this type of platform has been seen
             if (b = a[j]) // if this distance has been seen
-                return (b >= 0) // prediction
+                return b;// prediction
             else { // if this is a new distance
                 this.actions[i][j] = 1; // add it to the array
                 this.explored++; // new state discovered
@@ -101,17 +101,21 @@ function decide() {
     }
     previous_score = score;
     states = get_states();
-    q = 0;
     predictions = [];
-    for (q = 0; q < states.length; q++) {
-        if ( (platforms[q].reward = brain.predict(states[q])) && (q!= previous_collision) )
-        	// don't pick same platform twice // gets stuck 
-            predictions.push(q);
+    maxreward = 0;
+    maxrewardindex = 0;
+    for (zz = 0; zz < states.length; zz++) {
+            predictions[zz] = brain.predict(states[zz]);
+            platforms[zz].reward = predictions[zz];
+            if(predictions[zz] > predictions[maxrewardindex]){
+            	maxreward = predictions[zz];
+            	maxrewardindex = zz;
+            }
     }
-    target_platform = predictions[Math.floor(Math.random() * predictions.length)];
-    if (predictions.length < 2) { // stuck
-        target_platform = Math.floor(Math.random() * 10);
-    }
+    target_platform = maxrewardindex;
+    // if (predictions.length < 2) { // stuck
+    //     target_platform = Math.floor(Math.random() * 10);
+    // }
     brain.predict(states[target_platform]);
     platforms.forEach(function(p, index) { p.target = 0; });
 	platforms[target_platform].target = 1;
