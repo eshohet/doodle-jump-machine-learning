@@ -39,7 +39,7 @@ if(store.has('brain')) {
   brain.actions = storedBrain.actions;
   brain.explored = storedBrain.explored;
   brain.last_state = storedBrain.last_state;
-  
+
   console.log('Brain has been loaded');
 }
 
@@ -56,7 +56,10 @@ function get_states() {
     });
     return state;
 }
-
+function setGamespeed(val){
+  gamespeed = val;
+  document.getElementById("gamespeedVal").value = val;
+}
 function get_state_num(i) {
     p = platforms[i];
     state = ([1 * (p.flag || (p.type == 3)), Math.round((p.y - player.y) / division)] * division);

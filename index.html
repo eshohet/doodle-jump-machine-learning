@@ -14,6 +14,13 @@
         <div id="chart2" style="height: 300px; width: 25%; display: inline-block;">  </div>
         <div id="chart3" style="height: 300px; width: 25%; display: inline-block;">  </div>
       </div>
+      <div>
+          Game Speed
+      </div>
+      <div>          
+          <input type="range" id="gamespeed" min="1" max="50" value="1" onchange="setGamespeed(this.value);">
+          <input type="text" value="1" id="gamespeedVal" size="2">
+      </div>
       <div class="container">
 
         <canvas id="canvas" class="doodle_jump">
