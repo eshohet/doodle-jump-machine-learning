@@ -15,7 +15,14 @@ var width = 422,
 canvas.width = width;
 canvas.height = height;
 
+var datastore = Rhaboo.persistent('qmodel');
 
+function persistModel(data) {
+  datastore.write('model', data);
+}
+function loadModel() {
+  return datastore.model;
+}
 
 var baseHeight = 0;
 
