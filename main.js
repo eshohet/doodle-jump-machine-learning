@@ -250,8 +250,7 @@ function init() {
     ctx.clearRect(0, 0, width, height);
   }
 
-  //Player related calculations and functions
-decision = -39;
+decision = -39; // the point at which a prediction is made
   function playerCalc() {
     // When the player is almost at the top of the arc, predict where to go
     if(Math.round(player.vy*5) == -39) // scale to reduce number of calls to one per jump
@@ -708,7 +707,7 @@ menuLoop = function() {
 menuLoop();
 
 
-division = 10;
+division = 10; // round the y distance to the nearest division
 
 function get_states() {
   state = [];
@@ -731,28 +730,24 @@ function get_state_num(i) {
 
 function decide() {
   // reward for previous prediction
-    //gamespeed = 0;
-    //i = target_platform;
+    //gamespeed = 0; // pause
     // console.log("decide");
     if(target_platform>=0){
       if(player.isDead){
-        //while(brain.forward(get_state_num(i))); // get same prediction again
-        brain.backward(-.1);
+        brain.reward(-.1);
         //console.log("dead");
         reset();
       }
       else{
         if(target_platform == previous_collision){ 
         // decision was success
-          //while(brain.forward(get_state_num(i)) == 0); // get the same prediction again
-          brain.backward((score-previous_score-10)/100); // reward it for increasing score
+          brain.reward((score-previous_score-10)/100); // reward it for increasing score
           // penalize for staying in same spot
           //console.log("success");
         }
         else{
-          //while(brain.forward(get_state_num(i)) == 0); 
           // missed the target platform, but didn't die
-          brain.backward(-.05); 
+          brain.reward(-.05); 
           //console.log("miss");
         }
       
@@ -763,15 +758,14 @@ function decide() {
     predictions = [];
     q = 0;
     for (q = 0; q < state.length; q++) {
-      //console.log(q);
-      if(brain.forward(state[q]))
+      if(brain.predict(state[q]))
         predictions.push(q); 
     }
     target_platform = predictions[Math.floor(Math.random()*predictions.length)];
     if(predictions.length < 2){ // stuck
       target_platform = Math.floor(Math.random()*10);
     }      
-    brain.forward(state[target_platform]);
+    brain.predict(state[target_platform]);
     
 }
 
