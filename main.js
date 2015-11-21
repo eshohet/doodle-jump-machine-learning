@@ -704,3 +704,19 @@ menuLoop = function() {
 };
 
 menuLoop();
+
+
+window.onbeforeunload = function (event) {
+    //save the master brain to disk before exiting
+    store.set('brain', brain);
+
+    var message = 'Are you sure you wish to stop running this algorithm?';
+    if (typeof event == 'undefined') {
+      event = window.event;
+    }
+    if (event) {
+      event.returnValue = message;
+    }
+    return message;
+
+};
