@@ -15,13 +15,11 @@ var width = 422,
 canvas.width = width;
 canvas.height = height;
 
-
-
 var baseHeight = 0;
-
 
 var gamespeed = 1;
 var draw_flag = 1;
+
 
 // Used to define current iteration for graphing library
 var currentIteration = 1;
