@@ -251,10 +251,10 @@ function init() {
   }
 
   //Player related calculations and functions
-
+decision = -39;
   function playerCalc() {
     // When the player is almost at the top of the arc, predict where to go
-    if(Math.round(player.vy*5) == -28) // scale to reduce number of calls
+    if(Math.round(player.vy*5) == -39) // scale to reduce number of calls to one per jump
       decide();
 
     // face the direction of target platform
@@ -484,8 +484,10 @@ function init() {
   }
 
   function updateScore() {
-    var scoreText = document.getElementById("score");
-    scoreText.innerHTML = score;
+    if(draw_flag){
+      var scoreText = document.getElementById("score");
+      scoreText.innerHTML = score;
+    }
   }
 
   function gameOver() {
@@ -542,11 +544,16 @@ function init() {
   showScore();
 }
 
+scores = [0,0,0,0,0,0,0,0,0,0];
+
 function reset() {
   // record iteration and score for graphing library
-  ScorePerLifeChartDPS.push({x: currentIteration, y: score});
-  updateChart();
-
+  scores[currentIteration%10] = score;
+  average = (scores[0]+scores[1]+scores[2]+scores[3]+scores[4]+scores[5]+scores[6]+scores[7]+scores[8]+scores[9])/10;
+  if(currentIteration%10 == 0){  
+    ScorePerLifeChartDPS.push({x: currentIteration, y: average});
+    updateChart();
+  }
   hideGoMenu();
   showScore();
   player.isDead = false;
@@ -700,13 +707,22 @@ menuLoop = function() {
 
 menuLoop();
 
-// Game interface
-function get_state() {
+
+division = 10;
+
+function get_states() {
   state = [];
   platforms.forEach(function(p,i){
-    state.push([p.flag,Math.round((p.y-player.y)/5)*5]); 
+    state.push([1*(p.flag || (p.type == 3)),Math.round((p.y-player.y)/division)*division]); 
     // State = (Platform breakable, Y distance to platform)
   });
+  return state;
+}
+
+function get_state_num(i) {
+  p = platforms[i];
+  state = ([1*(p.flag || (p.type == 3)),Math.round((p.y-player.y)/division)]*division); 
+    // State = (Platform breakable, Y distance to platform)
   return state;
 }
 
@@ -715,37 +731,48 @@ function get_state() {
 
 function decide() {
   // reward for previous prediction
-    if(player.isDead){
-      while(brain.forward(target_platform) == 0);
-      brain.backward(-50);
-      reset();
-    }
-    else{
-      if(target_platform == previous_collision){ 
-      // decision was success
-        while(brain.forward(target_platform) == 0); // get the same prediction again
-        brain.backward(score-previous_score); // reward it for increasing score
+    //gamespeed = 0;
+    //i = target_platform;
+    // console.log("decide");
+    if(target_platform>=0){
+      if(player.isDead){
+        //while(brain.forward(get_state_num(i))); // get same prediction again
+        brain.backward(-.1);
+        //console.log("dead");
+        reset();
       }
       else{
-        while(brain.forward(target_platform) == 1); 
-        // missed the target platform, but didn't die
-        brain.backward(-5); 
+        if(target_platform == previous_collision){ 
+        // decision was success
+          //while(brain.forward(get_state_num(i)) == 0); // get the same prediction again
+          brain.backward((score-previous_score-10)/100); // reward it for increasing score
+          // penalize for staying in same spot
+          //console.log("success");
+        }
+        else{
+          //while(brain.forward(get_state_num(i)) == 0); 
+          // missed the target platform, but didn't die
+          brain.backward(-.05); 
+          //console.log("miss");
+        }
+      
       }
-    state = get_state();
+    }
+    previous_score = score;
+    state = get_states();
     predictions = [];
-    for (i = 0; i < state.length; i++) {
-      if(brain.forward(state[i][0],state[i][1]))
-        predictions.push(i); 
+    q = 0;
+    for (q = 0; q < state.length; q++) {
+      //console.log(q);
+      if(brain.forward(state[q]))
+        predictions.push(q); 
     }
     target_platform = predictions[Math.floor(Math.random()*predictions.length)];
-
-    //console.log(predictions);
-    }
-
+    if(predictions.length < 2){ // stuck
+      target_platform = Math.floor(Math.random()*10);
+    }      
+    brain.forward(state[target_platform]);
     
-
-
-
 }
 
   ////// Determine the direction to move to get to platform p
