@@ -66,7 +66,7 @@ function setGamespeed(val){
 }
 function get_state_num(i) {
     p = platforms[i];
-    state = ([1 * (p.state || (p.type == 3)), Math.round((p.y - player.y) / division)] * division);
+    state = ([1 * (p.state || (p.type == 3)), Math.round((p.y - player.y) / division) * division]);
     // State = (Platform breakable, Y distance to platform)
     return state;
 }
