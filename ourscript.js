@@ -2,7 +2,7 @@ var Q_model = function() {
     this.actions = []; // the full set of actions
     this.explored = 0; // how many states have been explored
     this.last_state = [0, 0]; // the last state predicted
-    this.learning_rate = 0.01;
+    this.learning_rate = 0.1;
     this.predict = function(state) {
         this.last_state = state;
         i = state[0]; // type of platform
@@ -34,14 +34,14 @@ var Q_model = function() {
 var brain = new Q_model();
 
 //autoload brain from disk
-if(store.has('brain')) {
+/*if(store.has('brain')) {
   var storedBrain = store.get('brain');
   brain.actions = storedBrain.actions;
   brain.explored = storedBrain.explored;
   //brain.last_state = storedBrain.last_state;
 
   console.log('Brain has been loaded');
-}
+}*/
 
 var division = 10; // round the y distance to the nearest division
 var previous_score = 0;
@@ -62,19 +62,20 @@ function setGamespeed(val){
 }
 function get_state_num(i) {
     p = platforms[i];
-    state = ([1 * (p.flag || (p.type == 3)), Math.round((p.y - player.y) / division)] * division);
+    state = ([1 * (p.state || (p.type == 3)), Math.round((p.y - player.y) / division)] * division);
     // State = (Platform breakable, Y distance to platform)
     return state;
 }
 
 
-
+var states;
 
 function decide() {
     // reward for previous prediction
     //gamespeed = 0; // pause
     // console.log("decide");
     if (target_platform >= 0) {
+
         if (player.isDead) {
             brain.reward(-10);
             //console.log("dead");
@@ -82,30 +83,35 @@ function decide() {
         } else {
             if (target_platform == previous_collision) {
                 // decision was success
-                brain.reward((score - previous_score - 10)); // reward it for increasing score
+                brain.reward((score - previous_score - 1)); // reward it for increasing score
                 // penalize for staying in same spot
                 //console.log("success");
             } else {
                 // missed the target platform, but didn't die
-                brain.reward(-5);
+                brain.predict(states[previous_collision]); // reward for the platform we landed on.
+                brain.reward();
                 //console.log("miss");
             }
 
         }
     }
     previous_score = score;
-    state = get_states();
+    states = get_states();
     predictions = [];
     q = 0;
-    for (q = 0; q < state.length; q++) {
-        if (brain.predict(state[q]))
+    for (q = 0; q < states.length; q++) {
+        if (platforms[q].reward = brain.predict(states[q]))
             predictions.push(q);
     }
     target_platform = predictions[Math.floor(Math.random() * predictions.length)];
     if (predictions.length < 2) { // stuck
         target_platform = Math.floor(Math.random() * 10);
     }
-    brain.predict(state[target_platform]);
+    brain.predict(states[target_platform]);
+    platforms.forEach(function(p, index) { p.target = 0; });
+	platforms[target_platform].target = 1;
+
+
 
 }
 

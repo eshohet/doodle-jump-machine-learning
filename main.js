@@ -131,7 +131,7 @@ function Platform() {
     this.cheight = 31;
 
     this.reward = 0;
-
+    this.target = 0;
     //Function to draw it
     this.draw = function() {
         try {
@@ -143,9 +143,15 @@ function Platform() {
             else if (this.type == 4 && this.state === 0) this.cy = 90;
             else if (this.type == 4 && this.state == 1) this.cy = 1000;
 
-            if (draw_flag)
+            if (draw_flag){
                 ctx.drawImage(image, this.cx, this.cy, this.cwidth, this.cheight, this.x, this.y, this.width, this.height);
                 ctx.fillText(this.reward, this.x + 30, this.y + 13);
+                if(this.target){
+                  ctx.fillText("TARGET", this.x + 20, this.y + 26);
+
+                }
+
+              }
         } catch (e) {}
     };
 
