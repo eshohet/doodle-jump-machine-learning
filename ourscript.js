@@ -1,8 +1,9 @@
-var Q_model = function() {
+
+    var Q_model = function() {
     this.actions = []; // the full set of actions
     this.explored = 0; // how many states have been explored
     this.last_state = [0, 0]; // the last state predicted
-    this.learning_rate = 0.1;
+    this.learning_rate = 0.01;
     this.predict = function(state) {
         this.last_state = state;
         i = state[0]; // type of platform
@@ -31,6 +32,7 @@ var Q_model = function() {
     };
 
 }
+
 var brain = new Q_model();
 
 //autoload brain from disk
@@ -47,11 +49,12 @@ var division = 10; // round the y distance to the nearest division
 var previous_score = 0;
 var previous_collision = -1;
 var target_platform = -2;
+var base_score = 0;
 
 function get_states() {
     state = [];
     platforms.forEach(function(p, i) {
-        state.push([1 * (p.flag || (p.type == 3)), Math.round((p.y - player.y) / division) * division]);
+        state.push([1 * (p.state || (p.type == 3)), Math.round((p.y - player.y) / division) * division]);
         // State = (Platform breakable, Y distance to platform)
     });
     return state;
@@ -90,7 +93,7 @@ function decide() {
             } else {
                 // missed the target platform, but didn't die
                 brain.predict(states[previous_collision]); // reward for the platform we landed on.
-                brain.reward();
+                brain.reward((score - previous_score - 1));
                 //console.log("miss");
             }
 
@@ -98,10 +101,11 @@ function decide() {
     }
     previous_score = score;
     states = get_states();
-    predictions = [];
     q = 0;
+    predictions = [];
     for (q = 0; q < states.length; q++) {
-        if (platforms[q].reward = brain.predict(states[q]))
+        if ( (platforms[q].reward = brain.predict(states[q])) && (q!= previous_collision) )
+        	// don't pick same platform twice // gets stuck 
             predictions.push(q);
     }
     target_platform = predictions[Math.floor(Math.random() * predictions.length)];
@@ -120,9 +124,9 @@ function decide() {
 function direction(n) {
     p = platforms[n];
     try {
-        if (p.x + p.width - 25 < player.x)
+        if (p.x + p.width - 35 < player.x)
             return "left"
-        else if (player.x < p.x + 25)
+        else if (player.x < p.x + 10)
             return "right"
     } catch (e) {}
     return "none"

@@ -568,7 +568,7 @@ function reset() {
 
     flag = 0;
     position = 0;
-    score = 0;
+    score = base_score;
     baseHeight = 0;
     currentIteration++;
 
