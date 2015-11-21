@@ -59,6 +59,7 @@ function get_states() {
 function setGamespeed(val){
   gamespeed = val;
   document.getElementById("gamespeedVal").value = val;
+  document.getElementById("gamespeed").value = val;
 }
 function get_state_num(i) {
     p = platforms[i];
