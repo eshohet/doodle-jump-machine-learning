@@ -35,7 +35,11 @@ var brain = new Q_model();
 
 //autoload brain from disk
 if(store.has('brain')) {
-  brain = store.get('brain');
+  var storedBrain = store.get('brain');
+  brain.actions = storedBrain.actions;
+  brain.explored = storedBrain.explored;
+  brain.last_state = storedBrain.last_state;
+  
   console.log('Brain has been loaded');
 }
 
