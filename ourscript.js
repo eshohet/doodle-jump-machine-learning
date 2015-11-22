@@ -44,8 +44,9 @@
             positive = 1;
         this.actions[i][j][k] += this.learning_rate*amount;
         if(this.actions[i][j][k] == 0 && positive == 1)
-            this.actions[i][j][k] -= 1;
-    };
+            this.actions[i][j][k] -= 1; // this run 0.000000000000000000000001% of the time. yes. what does it do.
+        //if it doesn't run, itll go from 0 -> random number from 1-100. it got me stuck before because it wouldnt go negative and i just ran out of ram.LOL FUCK
+    }; // LOL duct tape here... what in the it was for your broken if b = ..... cause that still exists btw. TOLD YOU THIS CODE WAS UGLY AND MESSY LOL
 
 }
 
@@ -63,7 +64,8 @@ var brain = new Q_model();
 
 var division = 10; // round the y distance to the nearest division
 var previous_score = 0;
-var previous_collision = -1;
+var previous_collision = -1; // how does this happen sometimes // the genie did it se c LLEOMLME L OLA DLOL OLOLOLOL
+
 var target_platform = -2;
 var base_score = 0;
 
@@ -93,30 +95,49 @@ function get_state_num(i) {
 
 
 var states;
+var previous_player_height = 0;
+var scale_reward_pos = 1/75; // scale down reward because height difference is too high
 
 function decide() {
     // reward for previous prediction
     //gamespeed = 0; // pause
     // console.log("decide");
-    if (target_platform >= 0) {
+    if (target_platform >= 0 && previous_collision >= 0 ) {
 
         if (player.isDead) {
             brain.reward(-100);
             //console.log("dead");
             reset();
         } else {
-            if (target_platform == previous_collision) {
-                // decision was success
-                brain.reward((score - previous_score - 5 )); // reward it for increasing score
-                // penalize for staying in same spot
-                //console.log("success");
-            } else {
-                // missed the target platform, but didn't die
-                brain.reward(-10)
-                brain.predict(states[previous_collision]); // reward for the platform we landed on.
-                brain.reward((score - previous_score));
+            if(previous_collision != target_platform)
+                brain.reward(-2); // need either this or to be able to tell apart the 2 cases //why... 
+                                    // the game is targetting a platform out of reach, and penalizing only the platform it is hitting oh right. i knew i needed it for something..
+            brain.predict(states[previous_collision]);
+            // r = (player.height - previous_player_height)*scale_reward_pos - 1;
+            r = (score-previous_score-5);
+            brain.reward(r);//////////
+            //////////////////// what       o you want me to push this? LOL not yet. lets try lower death penalty..no?  death is bad! your original penalty was much lower..
+            // you got scores of 6000 with this not sure if it was death penalty or the x parameters.. x parameters
+            // 
+            //wow much cleaner. does same/// thing lmao
+            // i've been meaning to do this for a while....
+
+
+            // if (target_platform == previous_collision) {
+            //     // decision was success
+            //     // brain.reward((score - previous_score - 5 )); // reward it for increasing score
+            //     brain.reward((player.height - previous_player_height)*scale_reward_pos - 1); // reward it for increasing score
+            //     // penalize for staying in same spot
+            //     //console.log("success");
+            // } else {
+            //     // missed the target platform, but didn't die
+            //     brain.reward(-2); // it often misses a platform and doesnt die... because.... or it aimed for something way above it. how to tell? 
+            //     brain.predict(states[previous_collision]); // reward for the platform we landed on. 
+            //     brain.reward((player.height - previous_player_height)*scale_reward_pos - 1); // reward it for increasing score
+            //         // -5 penalizes for staying at same height 
+                // brain.reward((score - previous_score));
                 //console.log("miss");
-            }
+            // }
 
         }
     }
@@ -148,7 +169,7 @@ function decide() {
 	platforms[target_platform].target = 1;
 
 
-
+    previous_player_height = player.height;
 }
 
 ////// Determine the direction to move to get to platform p
@@ -164,3 +185,7 @@ function direction(n) {
     } catch (e) {}
     return "none"
 }
+
+
+// want to try it?
+// is it fine?
