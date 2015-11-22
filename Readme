@@ -2,7 +2,30 @@ The state for each platform consists of the type and distance to the platform.
 
 state = [type, distance]
 
-the type indicates if the platform is visible or not, or if it breaks (red platform)
+	the type indicates if the platform is visible or not, or if it breaks (red platform)
 
-the distance is the vertical distance between the player and platform
+	the distance is the vertical distance between the player and platform
+
+get_state_num(n)
+	returns the state for a particular platform n, with n in range [0,9]
+
+get_states()
+	returns an array of the states for all 10 platforms
+
+
+
+brain.predict(state)
+	returns the predicted reward of going to that platform
+
+brain.reward(amount)
+	rewards the previous prediction 
+
+decide()
+	is called by the game code and sets a global parameter target_platform
+
+target_platform 
+	is the current platform the doodle should try to get to
+
+direction(n)
+	tells the game which direction to move to get to the target_platform
 
