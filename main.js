@@ -259,7 +259,7 @@ function init() {
     decision = -39; // the point at which a prediction is made
     function playerCalc() {
         // When the player is almost at the top of the arc, predict where to go
-        if (Math.round(player.vy * 5) == -39) // scale to reduce number of calls to one per jump
+        if (Math.round(player.vy * 5) == decision) // scale to reduce number of calls to one per jump
             decide();
 
         // face the direction of target platform
@@ -276,7 +276,7 @@ function init() {
             player.x += player.vx;
             player.vx -= 0.15;
             //stop moving if we're above the target platform
-            if (player.x > platforms[target_platform].x && player.x < (platforms[target_platform].x + width && platforms[target_platform] > player.y)){
+            if (player.x >= platforms[target_platform].x && player.x <= (platforms[target_platform].x + width && platforms[target_platform] > player.y)){
               player.vx = 0;
             }
         } else {
@@ -289,7 +289,7 @@ function init() {
             player.x += player.vx;
             player.vx += 0.15;
             //stop moving in x direction if we are above the target platform
-            if (player.x > platforms[target_platform].x && player.x < (platforms[target_platform].x + width && platforms[target_platform] > player.y)){
+            if (player.x >= platforms[target_platform].x && player.x <= (platforms[target_platform].x + width && platforms[target_platform] > player.y)){
               player.vx = 0;
             }
         } else {
@@ -471,6 +471,7 @@ function init() {
             if (player.vy > 0 && p.state === 0 && (player.x + 15 < p.x + p.width) && (player.x + player.width - 15 > p.x) && (player.y + player.height > p.y) && (player.y + player.height < p.y + p.height)) {
 
                 if (p.type == 3 && p.flag === 0) {
+                    previous_collision = i;
                     p.flag = 1;
                     jumpCount = 0;
                     return;
@@ -478,7 +479,10 @@ function init() {
                     previous_collision = i;
                     player.jump();
                     p.state = 1;
-                } else if (p.flag == 1) return;
+                } else if (p.flag == 1){
+                    previous_collision = i;
+                    return;
+                } 
                 else {
                     previous_collision = i;
                     player.jump();
