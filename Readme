@@ -1,0 +1,8 @@
+The state for each platform consists of the type and distance to the platform.
+
+state = [type, distance]
+
+the type indicates if the platform is visible or not, or if it breaks (red platform)
+
+the distance is the vertical distance between the player and platform
+

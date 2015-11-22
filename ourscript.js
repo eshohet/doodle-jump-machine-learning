@@ -12,15 +12,15 @@
             if (b = a[j]) // if this distance has been seen
                 return b;// prediction
             else { // if this is a new distance
-                this.actions[i][j] = 1; // add it to the array
+                this.actions[i][j] = Math.round(Math.random()*100); // add it to the array
                 this.explored++; // new state discovered
-                return 1;
+                return this.actions[i][j];
             }
         } else { // this type of platform has not been seen
             this.actions[i] = []; // add the platform type
-            this.actions[i][j] = 1 // add the distance
+            this.actions[i][j] = Math.round(Math.random()*100); // add the distance
             this.explored++; // new state discovered
-            return 1;
+            return this.actions[i][j];
         }
 
     };
