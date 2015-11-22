@@ -62,7 +62,8 @@ var brain = new Q_model();
   console.log('Brain has been loaded');
 }*/
 
-var division = 10; // round the y distance to the nearest division
+var ydivision = 10; // round the y distance to the nearest ydivision
+var xdivision = 40; 
 var previous_score = 0;
 var previous_collision = -1; // how does this happen sometimes // the genie did it se c LLEOMLME L OLA DLOL OLOLOLOL
 
@@ -72,8 +73,8 @@ var base_score = 0;
 function get_states() {
     state = [];
     platforms.forEach(function(p, i) {
-        // state.push([1 * (p.state || (p.type == 3)), (Math.round((p.y - player.y) / division) * division) + Math.abs(Math.round( (p.x - player.x) / 6))]);
-        state.push([1 * (p.state || (p.type == 3)), (Math.round((p.y - player.y) / division) * division), Math.abs(Math.round( (p.x - player.x) / division))*division]);
+        // state.push([1 * (p.state || (p.type == 3)), (Math.round((p.y - player.y) / ydivision) * ydivision) + Math.abs(Math.round( (p.x - player.x) / 6))]);
+        state.push([1 * (p.state || (p.type == 3)), (Math.round((p.y - player.y) / ydivision) * ydivision), Math.abs(Math.round( (p.x - player.x) / xdivision))*xdivision]);
         // multiplying by division rescales it so if we change division value later on, we can still use the brain created in this version 
         // State = (Platform breakable, Y distance to platform)
     });
@@ -84,28 +85,20 @@ function setGamespeed(val){
   document.getElementById("gamespeedVal").value = val;
   document.getElementById("gamespeed").value = val;
 }
-function get_state_num(i) {
-    p = platforms[i];
-    // state = ([1 * (p.state || (p.type == 3)), (Math.round((p.y - player.y) / division) * division) + Math.abs(Math.round( (p.x - player.x) / 6))]);
-    state.push([1 * (p.state || (p.type == 3)), (Math.round((p.y - player.y) / division) * division), Math.abs(Math.round( (p.x - player.x) / division))]);
-    // Im not sure..  note that this function returns a single state, rather than an array of states. got it boss
-    // State = (Platform breakable, Y distance to platform)
-    return state;
-}
-
 
 var states;
 var previous_player_height = 0;
 var scale_reward_pos = 1/75; // scale down reward because height difference is too high
+var scale_death;
 
 function decide() {
     // reward for previous prediction
     //gamespeed = 0; // pause
     // console.log("decide");
     if (target_platform >= 0 && previous_collision >= 0 ) {
-
         if (player.isDead) {
-            brain.reward(-100);
+        	scale_death = 1 + score/2000;
+            brain.reward(-100*scale_death);
             //console.log("dead");
             reset();
         } else {
@@ -116,29 +109,7 @@ function decide() {
             // r = (player.height - previous_player_height)*scale_reward_pos - 1;
             r = (score-previous_score-5);
             brain.reward(r);//////////
-            //////////////////// what       o you want me to push this? LOL not yet. lets try lower death penalty..no?  death is bad! your original penalty was much lower..
-            // you got scores of 6000 with this not sure if it was death penalty or the x parameters.. x parameters
-            // 
-            //wow much cleaner. does same/// thing lmao
-            // i've been meaning to do this for a while....
-
-
-            // if (target_platform == previous_collision) {
-            //     // decision was success
-            //     // brain.reward((score - previous_score - 5 )); // reward it for increasing score
-            //     brain.reward((player.height - previous_player_height)*scale_reward_pos - 1); // reward it for increasing score
-            //     // penalize for staying in same spot
-            //     //console.log("success");
-            // } else {
-            //     // missed the target platform, but didn't die
-            //     brain.reward(-2); // it often misses a platform and doesnt die... because.... or it aimed for something way above it. how to tell? 
-            //     brain.predict(states[previous_collision]); // reward for the platform we landed on. 
-            //     brain.reward((player.height - previous_player_height)*scale_reward_pos - 1); // reward it for increasing score
-            //         // -5 penalizes for staying at same height 
-                // brain.reward((score - previous_score));
-                //console.log("miss");
-            // }
-
+           
         }
     }
     previous_score = score;
@@ -155,15 +126,8 @@ function decide() {
             	maxrewardindex = zz;
             }
     }
-    // if(!brain.random)
-        target_platform = maxrewardindex;
-    // else{
-        //If we're picking random options, randomly pick from the values that are at least not negative, e.g. have not failed often.
-        // while( (predictions[(target_platform = Math.floor(Math.random() * 10))] ) <= 0);
-    // }
-    // if (predictions.length < 2) { // stuck
-    //     target_platform = Math.floor(Math.random() * 10);
-    // }
+    target_platform = maxrewardindex;
+
     brain.predict(states[target_platform]);
     platforms.forEach(function(p, index) { p.target = 0; });
 	platforms[target_platform].target = 1;
@@ -186,6 +150,3 @@ function direction(n) {
     return "none"
 }
 
-
-// want to try it?
-// is it fine?

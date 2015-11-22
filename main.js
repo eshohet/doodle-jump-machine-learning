@@ -674,6 +674,10 @@ function playerJump() {
             } else
                 reset();
         }
+
+
+
+
     };
 
     document.onkeyup = function(e) {
@@ -686,6 +690,7 @@ function playerJump() {
             dir = "right";
             player.isMovingRight = false;
         }
+
     };
 
     //Accelerations produces when the user hold the keys
