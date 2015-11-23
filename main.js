@@ -494,6 +494,7 @@ function init() {
         var s = Spring;
         if (player.vy > 0 && (s.state === 0) && (player.x + 15 < s.x + s.width) && (player.x + player.width - 15 > s.x) && (player.y + player.height > s.y) && (player.y + player.height < s.y + s.height)) {
             s.state = 1;
+            previous_collision = 0;
             player.jumpHigh();
         }
 
@@ -561,12 +562,16 @@ function init() {
     showScore();
 }
 
-scores = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+scores = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
 function reset() {
     // record iteration and score for graphing library
-    scores[currentIteration % 10] = score;
+    scores[currentIteration % 11] = score;
     average = (scores[0] + scores[1] + scores[2] + scores[3] + scores[4] + scores[5] + scores[6] + scores[7] + scores[8] + scores[9]) / 10;
+    //sorted = scores.sort(function(a,b){return a-b;});
+    //console.log(sorted);
+    //median = sorted[5];
+    //max = sorted[10];
     if (currentIteration % 10 == 0) {
         ScorePerLifeChartDPS.push({
             x: currentIteration,

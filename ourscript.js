@@ -40,6 +40,9 @@
         i = this.last_state[0];
         j = this.last_state[1];
         k = this.last_state[2];
+
+        //this.actions[i][j][k] = Math.round((this.actions[i][j][k] + amount)/2);
+        
         if(this.actions[i][j][k] > 0)
             positive = 1;
         this.actions[i][j][k] += this.learning_rate*amount;
@@ -74,7 +77,7 @@ function get_states() {
     state = [];
     platforms.forEach(function(p, i) {
         // state.push([1 * (p.state || (p.type == 3)), (Math.round((p.y - player.y) / ydivision) * ydivision) + Math.abs(Math.round( (p.x - player.x) / 6))]);
-        state.push([1 * (p.state || (p.type == 3)), (Math.round((p.y - player.y) / ydivision) * ydivision), Math.abs(Math.round( (p.x - player.x) / xdivision))*xdivision]);
+        state.push([1 * (p.state || (p.type == 3)) + 2 * (p.type == 2), (Math.round((p.y - player.y) / ydivision) * ydivision), Math.abs(Math.round( (p.x - player.x) / xdivision))*xdivision]);
         // multiplying by division rescales it so if we change division value later on, we can still use the brain created in this version 
         // State = (Platform breakable, Y distance to platform)
     });
@@ -90,6 +93,7 @@ var states;
 var previous_player_height = 0;
 var scale_reward_pos = 1/75; // scale down reward because height difference is too high
 var scale_death;
+var previous_collision2 = -3;
 
 function decide() {
     // reward for previous prediction
@@ -102,12 +106,19 @@ function decide() {
             //console.log("dead");
             reset();
         } else {
-            if(previous_collision != target_platform)
-                brain.reward(-2); // need either this or to be able to tell apart the 2 cases //why... 
+            if(previous_collision != target_platform){
+            	if(states[target_platform][1] < states[previous_collision][1]) 
+                	brain.reward(-20);
+                else
+                	brain.reward(-10);
+            }
+                	// need either this or to be able to tell apart the 2 cases //why... 
                                     // the game is targetting a platform out of reach, and penalizing only the platform it is hitting oh right. i knew i needed it for something..
             brain.predict(states[previous_collision]);
             // r = (player.height - previous_player_height)*scale_reward_pos - 1;
-            r = (score-previous_score-5);
+            r = (score-previous_score-20);
+            //if( (r>0) && (previous_collision == previous_collision2))
+            //	r = 0;
             brain.reward(r);//////////
            
         }
@@ -134,16 +145,17 @@ function decide() {
 
 
     previous_player_height = player.height;
+    previous_collision2 = previous_collision;
 }
 
 ////// Determine the direction to move to get to platform p
 function direction(n) {
     p = platforms[n];
     try {
-        if (p.x + p.width - 35 < player.x)
+        if (p.x + 25< player.x)
         // if(Math.abs(p.x-player.x)-35 < (Math.abs(canvas.width - player.x) + p.x)  )
             return "left"
-        else if (player.x < p.x + 10)
+        else if (player.x < p.x + 15)
         // else
             return "right"
     } catch (e) {}
