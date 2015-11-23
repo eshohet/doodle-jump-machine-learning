@@ -151,14 +151,23 @@ function decide() {
 ////// Determine the direction to move to get to platform p
 function direction(n) {
     p = platforms[n];
+    dir = "none";
     try {
         if (p.x + 25< player.x)
         // if(Math.abs(p.x-player.x)-35 < (Math.abs(canvas.width - player.x) + p.x)  )
-            return "left"
+            dir = "left";
         else if (player.x < p.x + 15)
         // else
-            return "right"
+            dir = "right";
+
+     //    if( Math.abs(p.x - player.x) > 175 ){
+	    // 	if(dir == "left")
+	    // 		dir = "right";
+	    // 	else if(dir == "right")
+	    // 		dir = "left";
+	    // }
     } catch (e) {}
-    return "none"
+
+    return dir;
 }
 
