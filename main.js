@@ -577,8 +577,13 @@ function reset() {
             x: currentIteration,
             y: average
         });
+        Chart2DPS.push({
+            x: currentIteration,
+            y: brain.explored
+        });
         updateChart();
         store.set('brain', brain);
+
     }
     hideGoMenu();
     showScore();
