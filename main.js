@@ -93,8 +93,33 @@ var Player = function() {
             else if (this.dir == "right_land") this.cy = 289;
             else if (this.dir == "left_land") this.cy = 371;
 
-            if (draw_flag)
-                ctx.drawImage(image, this.cx, this.cy, this.cwidth, this.cheight, this.x, this.y, this.width, this.height);
+            if (draw_flag){
+              platforms.forEach(function (p, i) {
+                ctx.beginPath();
+                ctx.moveTo(p.x + p.width/2, p.y + p.height/2);
+                ctx.lineTo(player.x + player.width/2, player.y + player.height/2);
+
+                if(i == target_platform) {
+                  ctx.strokeStyle = "green";
+                  ctx.lineWidth = 3;
+                  ctx.fillText("["  + states[i][2] + "," + states[i][1] + "," + states[i][0] + "]",
+                  (p.x + p.width/2 + player.x + player.width/2) /2, (p.y + p.height/2 + player.y + player.height/2)/2);
+                }
+                else if(brain.predict(states[i]) < 0) {
+                  ctx.strokeStyle = "red";
+                  ctx.lineWidth = 1;
+                }
+                else {
+                  ctx.strokeStyle = "black";
+                  ctx.lineWidth = 1;
+                }
+
+                ctx.stroke();
+              });
+              ctx.drawImage(image, this.cx, this.cy, this.cwidth, this.cheight, this.x, this.y, this.width, this.height);
+            }
+
+
         } catch (e) {}
     };
 
@@ -482,7 +507,7 @@ function init() {
                 } else if (p.flag == 1){
                     previous_collision = i;
                     return;
-                } 
+                }
                 else {
                     previous_collision = i;
                     player.jump();
