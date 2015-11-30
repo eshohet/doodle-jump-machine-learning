@@ -9,8 +9,21 @@
   </head>
   <body>
     <div>
-      <div id="chartContainer" style="height: 300px; width: 25%; display: inline-block;">  </div>
-      <div class="container" style="display: inline-block;">
+      <div>
+        <div id="chartScorePerLifeContainer" style="height: 300px; width: 25%; display: inline-block;">  </div>
+        <div id="chart2" style="height: 300px; width: 25%; display: inline-block;">  </div>
+        <div id="chart3" style="height: 300px; width: 25%; display: inline-block;">  </div>
+      </div>
+      <div>
+          Game Speed
+      </div>
+      <div>
+          <input type="range" id="gamespeed" min="0" max="100" value="0" onchange="setGamespeed(this.value);">
+          <input type="text" value="0" id="gamespeedVal" size="2" onchange="setGamespeed(this.value)">
+
+          <input type="button" value="Draw Switch" onclick="javascript: if(draw_flag == 0) { draw_flag = 1;} else { draw_flag = 0;}" />
+      </div>
+      <div class="container">
 
         <canvas id="canvas" class="doodle_jump">
           Aww, your browser doesn't support HTML5!
@@ -50,7 +63,10 @@
 
       </div>
     </div>
+
     <script src="scripts/storage.js"></script>
+    <script src="ourscript.js"></script>
     <script src="main.js"></script>
+
   </body>
 </html>
