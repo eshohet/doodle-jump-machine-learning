@@ -20,7 +20,7 @@ No installation is necessary, simply clone the repository and open up index.html
 
 ## UX Enhancements
 
-We've added several enhancements to the user interface for your convienence.
+We've added several enhancements to the user interface for your convenience.
 
 * Gamespeed - controls how fast the doodle plays
 * Draw toggle - turn this off and the algorithm will consume less resources since it will not render anything
@@ -33,7 +33,7 @@ We've added several enhancements to the user interface for your convienence.
 In order to modify the game's logic, see scripts/GameLogic.js
 
 ### Algorithm & Hyperparameters
-To modify our implementaiton of Q Learning, see scripts/QLearning.js
+To modify our implementation of Q Learning, see scripts/QLearning.js
 
 ### Autosave/load
 Your "brain" object is automatically saved and loaded when the browser closes and opens.
@@ -47,7 +47,7 @@ Your "brain" object is automatically saved and loaded when the browser closes an
 
 ## Algorithmic Details
 
-Please see paper.pdf for techncial details of our machine learning algorithm.
+Please see paper.pdf for technical details of our machine learning algorithm.
 
 ## Contributors
 Elliot Shohet, Michael Mathew, Grigor Ambartsumyan, Anmol Singh, Ibrahim Ahmed, Tuan Vu, Haoyao Chen, Inka Arifin, Guranjan Singh, Ronil Singh, Masayuki Takagi, Ahsan Abdullah
