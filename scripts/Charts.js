@@ -10,7 +10,7 @@ window.onload = function () {
   ScorePerLifeChart = new CanvasJS.Chart("chartScorePerLifeContainer",
   {
     title:{
-      text: "Score Per Life"
+      text: "Score vs Lives"
     },
     axisX: {
       title: "Life #"
@@ -27,13 +27,13 @@ window.onload = function () {
   Chart2 = new CanvasJS.Chart("chart2",
   {
     title:{
-      text: "Chart 2"
+      text: "States Explored vs Lives"
     },
     axisX: {
-      title: "X Label"
+      title: "Life #"
     },
     axisY: {
-      title: "Y Label"
+      title: "Unique Explored Count"
     },
     data: [{
       type: "line",
@@ -41,30 +41,14 @@ window.onload = function () {
     }]
   });
 
-  Chart3 = new CanvasJS.Chart("chart3",
-  {
-    title:{
-      text: "Chart 3"
-    },
-    axisX: {
-      title: "X Label"
-    },
-    axisY: {
-      title: "Y Label"
-    },
-    data: [{
-      type: "line",
-      dataPoints: Chart3DPS
-    }]
-  });
 
   ScorePerLifeChart.render();
   Chart2.render();
-  Chart3.render();
+
 }
 
 var updateChart = function() {
   ScorePerLifeChart.render();
   Chart2.render();
-  Chart3.render();
+
 };

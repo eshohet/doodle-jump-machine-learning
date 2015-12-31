@@ -42,7 +42,7 @@
         k = this.last_state[2];
 
         //this.actions[i][j][k] = Math.round((this.actions[i][j][k] + amount)/2);
-        
+
         if(this.actions[i][j][k] > 0)
             positive = 1;
         this.actions[i][j][k] += this.learning_rate*amount;
@@ -56,17 +56,17 @@
 var brain = new Q_model();
 
 //autoload brain from disk
-/*if(store.has('brain')) {
+if(store.has('brain')) {
   var storedBrain = store.get('brain');
   brain.actions = storedBrain.actions;
   brain.explored = storedBrain.explored;
   //brain.last_state = storedBrain.last_state;
-
   console.log('Brain has been loaded');
-}*/
+  console.log('States explored:' + brain.explored);
+}
 
 var ydivision = 10; // round the y distance to the nearest ydivision
-var xdivision = 40; 
+var xdivision = 40;
 var previous_score = 0;
 var previous_collision = -1; // how does this happen sometimes // the genie did it se c LLEOMLME L OLA DLOL OLOLOLOL
 
@@ -78,7 +78,7 @@ function get_states() {
     platforms.forEach(function(p, i) {
         // state.push([1 * (p.state || (p.type == 3)), (Math.round((p.y - player.y) / ydivision) * ydivision) + Math.abs(Math.round( (p.x - player.x) / 6))]);
         state.push([1 * (p.state || (p.type == 3)) + 2 * (p.type == 2), (Math.round((p.y - player.y) / ydivision) * ydivision), Math.abs(Math.round( (p.x - player.x) / xdivision))*xdivision]);
-        // multiplying by division rescales it so if we change division value later on, we can still use the brain created in this version 
+        // multiplying by division rescales it so if we change division value later on, we can still use the brain created in this version
         // State = (Platform breakable, Y distance to platform)
     });
     return state;
@@ -107,12 +107,12 @@ function decide() {
             reset();
         } else {
             if(previous_collision != target_platform){
-            	if(states[target_platform][1] < states[previous_collision][1]) 
+            	if(states[target_platform][1] < states[previous_collision][1])
                 	brain.reward(-20);
                 else
                 	brain.reward(-10);
             }
-                	// need either this or to be able to tell apart the 2 cases //why... 
+                	// need either this or to be able to tell apart the 2 cases //why...
                                     // the game is targetting a platform out of reach, and penalizing only the platform it is hitting oh right. i knew i needed it for something..
             brain.predict(states[previous_collision]);
             // r = (player.height - previous_player_height)*scale_reward_pos - 1;
@@ -120,7 +120,7 @@ function decide() {
             //if( (r>0) && (previous_collision == previous_collision2))
             //	r = 0;
             brain.reward(r);//////////
-           
+
         }
     }
     previous_score = score;
@@ -170,4 +170,3 @@ function direction(n) {
 
     return dir;
 }
-
