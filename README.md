@@ -1,6 +1,5 @@
 # Reinforcement Learning Applied to Doodle Jump
 
-<img src="https://raw.githubusercontent.com/eshohet/doodle-jump-machine-learning/master/report/dj.png" />
 
 
 ## Overview
@@ -11,7 +10,10 @@ Performance of the algorithm with fine-tuned hyperparameters shown below:
 
 <img src="https://raw.githubusercontent.com/eshohet/doodle-jump-machine-learning/master/report/x8_y2_rate1.png" />
 
-See report.pdf for in-depth details.
+<img src="https://raw.githubusercontent.com/eshohet/doodle-jump-machine-learning/master/report/dj.png" />
+
+
+See paper.pdf for in-depth details.
 
 
 ## Setup & Running
