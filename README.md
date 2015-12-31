@@ -4,7 +4,7 @@
 
 ## Overview
 
-This project demonstrates Q Learning, a subset of Reinforcement Machine Learning algorithms, applied to an HTML5 implementation of Doodle Jump.
+This project demonstrates the application of Q Learning, a reinforcement learning algorithm, to an HTML5 implementation of Doodle Jump.
 
 Performance of the algorithm with fine-tuned hyperparameters shown below:
 
