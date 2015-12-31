@@ -1,0 +1,129 @@
+\usepackage[left=1cm,top=2cm,bottom=2cm,right=1cm]{geometry}
+\usepackage[dutch]{babel}
+\usepackage[utf8]{inputenc}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage[normalem]{ulem}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{multicol}
+\usepackage{times}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{sectsty}
+\usepackage{pgf,tikz}
+\usepackage{calc}
+\usepackage{tkz-euclide}
+\usetkzobj{all}
+\usepackage{tkz-fct}
+\usepackage{tkz-graph}
+\usepackage{tkz-berge}
+\usepackage{tkz-tab}
+\usepackage{tkz-linknodes}
+\usepackage{hyperref}
+
+\usetikzlibrary{graphs, quotes, arrows.meta, math, calc, positioning}
+
+%titels van alle sections in Sans Serif
+\allsectionsfont{\sffamily}
+
+%commando om logo Sint-Jozefinstituut te tekenen
+\newlength{\fw}
+\newlength{\hh}
+\newlength{\lw}
+\newlength{\dw}
+\newlength{\rr}
+\newlength{\rs}
+\newcommand{\sjlogo}[1][1.5cm]{
+  \begin{tikzpicture}
+    \setlength{\fw}{#1}  		%breedte van het logo, is parameter #1
+    \setlength{\hh}{0.24\fw}    %halve hoogte van het logo
+    \setlength{\lw}{0.22\hh}    %dikte van één lijn
+    \setlength{\dw}{0.05\hh}    %afstand tussen de twee lijnen
+    \setlength{\rr}{0.3\hh}     %straal van bovenste cirkel
+    \setlength{\rs}{0.4\hh}     %straal van middelste cirkel moet steeds 1-2\rr
+    \coordinate (a) at (-\hh,0);
+    \coordinate (r) at (1.7071\hh,1.7071\hh);
+    \coordinate (s) at (-2.4142\hh,0);
+    \draw[line width=\lw, double distance=\dw] 
+       (a) arc (-180:-45:\hh) -- ++(r) -- ++(s) arc (90:270:\rr) arc (90:-180:\rs);
+  \end{tikzpicture}
+}
+
+%commando om lege pagina te maken
+\newcommand{\blankpage}{
+  \newpage
+  \thispagestyle{empty}
+  \mbox{}
+  \newpage
+}
+
+%commando om klas in te voeren
+\newcommand{\klas}[1]{\def\@klas{#1}}
+
+%commando om 
+\newcommand{\TitleExtra}[1]{\def\@extratitlestuff{#1}}
+
+%lengtes voor titelpagina
+\newlength{\logowidth}
+\setlength{\logowidth}{3cm}
+
+%commando om titelpagina te maken
+\renewcommand{\maketitle}{
+  \thispagestyle{empty}
+  \leavevmode%	
+  \vskip -2cm
+  \begin{tabular}{cc}
+	  \begin{minipage}{\logowidth}
+    	  \sjlogo[\logowidth]
+      \end{minipage} &     
+      \begin{minipage}{6cm}
+        \begin{center}
+          {\normalsize\sffamily
+          SINT-JOZEFINSTITUUT\\%
+          ESSEN\\%
+          {\bfseries vzw KORNoorderkempen}}\\%
+        \end{center}
+      \end{minipage}
+  \end{tabular}
+  \vskip \stretch{3}%
+  \noindent
+  \rule{\textwidth}{2pt}
+  \vskip 0.75em%
+  \begin{center}
+    \sffamily
+    {\Huge\bfseries \@title \par}%
+  \end{center}
+  \vskip 0.75em%
+  \noindent%
+  \rule{\textwidth}{2pt}%
+  \ifdefined\@extratitlestuff
+  	\vskip 0.75em%
+    \begin{center}
+		\@extratitlestuff
+	\end{center}
+  \fi
+  \vskip \stretch{3}%
+  \hfill \sffamily \@author\par%
+  \vskip 0.5em%
+  \hfill \sffamily \@klas\par%
+  \vskip 0.5em%
+  \hfill \sffamily \@date%
+  \vskip \stretch{1}%
+  \blankpage%
+  \setcounter{page}{1}%
+  \normalfont
+}
+
+%instellen header en footer, met package fancyhdr
+\pagestyle{fancy}
+\addtolength{\headheight}{5pt}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\fancyhead{}
+\fancyhead[LE,RO]{\sffamily\footnotesize \@title}
+\fancyfoot{}
+\fancyfoot[LO,RE]{\sffamily\footnotesize \@author}
+\fancyfoot[LE,RO]{\sffamily\footnotesize \thepage/\pageref{LastPage}}
