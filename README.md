@@ -8,9 +8,9 @@ This project demonstrates Q Learning, a subset of Reinforcement Machine Learning
 
 Performance of the algorithm with fine-tuned hyperparameters shown below:
 
-<img src="https://raw.githubusercontent.com/eshohet/doodle-jump-machine-learning/master/report/x8_y2_rate1.png" />
+<center><img src="https://raw.githubusercontent.com/eshohet/doodle-jump-machine-learning/master/report/x8_y2_rate1.png" /></center>
 
-<img src="https://raw.githubusercontent.com/eshohet/doodle-jump-machine-learning/master/report/dj.png" />
+<center><img src="https://raw.githubusercontent.com/eshohet/doodle-jump-machine-learning/master/report/dj.png" /></center>
 
 
 See paper.pdf for in-depth details.
